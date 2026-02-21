@@ -1,40 +1,51 @@
+# app.py
 import streamlit as st
 from modules.document_processor import process_documents
 from modules.vector_index import create_vector_index
 from modules.query_engine import get_query_engine, ask_query
-from modules.insights_parser import parse_insights
-from modules.visualization import plot_financial_trends
-import os
-
-st.set_page_config(page_title="FinVanta", layout="wide", page_icon="💰")
-
-st.title("💰 FinVanta – Financial Insights Platform")
-st.sidebar.header("Upload Financial Documents")
-
-# Upload documents
-uploaded_files = st.sidebar.file_uploader(
-    "Upload PDF/Excel/CSV files",
-    type=["pdf", "csv", "xlsx"],
-    accept_multiple_files=True
+from modules.insights_parser import (
+    parse_insights,
+    FiscalYearHighlights,
+    StrategyOutlookFutureDirection,
+    RiskManagement,
+    InnovationRnD,
 )
 
-if uploaded_files:
-    with st.spinner("Processing documents..."):
-        docs = process_documents(uploaded_files)
-        st.session_state.vector_index = create_vector_index(docs)
-    st.success("Documents processed successfully!")
+st.title("Finvanta - AI Financial Insights")
 
-query = st.text_input("Ask FinVanta anything about your financial documents:")
+if "index" not in st.session_state:
+    st.session_state.index = None
+if "processed" not in st.session_state:
+    st.session_state.processed = False
 
-if query and 'vector_index' in st.session_state:
-    engine = get_query_engine(st.session_state.vector_index)
-    response = ask_query(engine, query)
-    insights = parse_insights(response)
+uploaded_files = st.file_uploader("Upload PDF Annual Reports", accept_multiple_files=True)
+
+if st.button("Process Documents") and uploaded_files:
+    with st.spinner("Processing..."):
+        documents = process_documents(uploaded_files)
+        st.session_state.index = create_vector_index(documents)
+        st.session_state.processed = True
+    st.success("Documents processed!")
+
+if st.session_state.processed:
+    engine = get_query_engine(st.session_state.index)
     
-    st.subheader("📊 Generated Insights")
-    for section, content in insights.items():
-        st.markdown(f"### {section}")
-        st.write(content)
+    st.header("Analyze Insights")
+    if st.button("Generate Fiscal Year Highlights"):
+        fyh = parse_insights(engine, "Fiscal Year Highlights", FiscalYearHighlights)
+        st.json(fyh.dict())
+
+    if st.button("Generate Strategy & Outlook"):
+        strategy = parse_insights(engine, "Strategy Outlook and Future Direction", StrategyOutlookFutureDirection)
+        st.json(strategy.dict())
+
+    if st.button("Generate Risk Management Insights"):
+        risk = parse_insights(engine, "Risk Management", RiskManagement)
+        st.json(risk.dict())
+
+    if st.button("Generate Innovation & R&D Insights"):
+        rnd = parse_insights(engine, "Innovation and R&D", InnovationRnD)
+        st.json(rnd.dict())        st.write(content)
 
     st.subheader("📈 Financial Trends")
     plot_financial_trends(docs)

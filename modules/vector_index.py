@@ -1,20 +1,22 @@
 # modules/vector_index.py
-from llama_index import VectorStoreIndex, ServiceContext, StorageContext
-from llama_index.vector_stores import FaissVectorStore
 import faiss
+from llama_index.core import VectorStoreIndex, StorageContext
+from llama_index.vector_stores.faiss import FaissVectorStore  # âœ… correct subpackage path
+
 
 def create_vector_index(documents):
-    # Create FAISS index
-    d = 1536  # adjust based on embedding dimension
+    # Dimension must match your embedding model output
+    # text-embedding-ada-002 (OpenAI default) = 1536
+    # text-embedding-3-small = 1536
+    d = 1536
     faiss_index = faiss.IndexFlatL2(d)
+
     vector_store = FaissVectorStore(faiss_index=faiss_index)
-
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
-    service_context = ServiceContext.from_defaults()
 
+    # ServiceContext is deprecated in v0.10+ â€” Settings object is used automatically
     index = VectorStoreIndex.from_documents(
         documents,
-        service_context=service_context,
-        storage_context=storage_context
+        storage_context=storage_context,
     )
     return index

@@ -3,6 +3,7 @@ import streamlit as st
 from modules.document_processor import process_documents
 from modules.vector_index import create_vector_index
 from modules.query_engine import get_query_engine, ask_query
+# insights_parser unchanged
 from modules.insights_parser import (
     parse_insights,
     FiscalYearHighlights,

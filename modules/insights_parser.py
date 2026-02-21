@@ -1,8 +1,11 @@
 # modules/insights_parser.py
+from typing import Type
 from pydantic import BaseModel, Field
-from llama_index import QueryEngine
+from llama_index.core.query_engine import BaseQueryEngine  # ✅ correct base class
+from langchain_core.prompts import PromptTemplate           # ✅ updated path
+from langchain_core.output_parsers import PydanticOutputParser  # ✅ updated path
 
-# Define structured insight classes
+
 class FiscalYearHighlights(BaseModel):
     performance_highlights: str = Field(..., description="Key metrics over the fiscal year.")
     major_events: str = Field(..., description="Significant events, acquisitions, or strategic shifts.")
@@ -20,11 +23,8 @@ class InnovationRnD(BaseModel):
     r_and_d_activities: str = Field(..., description="Overview of R&D focus.")
     innovation_focus: str = Field(..., description="New technologies or patents.")
 
-# Function to parse insights
-def parse_insights(engine: QueryEngine, section: str, pydantic_model: BaseModel):
-    from langchain.prompts import PromptTemplate
-    from langchain.output_parsers import PydanticOutputParser
 
+def parse_insights(engine: BaseQueryEngine, section: str, pydantic_model: Type[BaseModel]):
     parser = PydanticOutputParser(pydantic_object=pydantic_model)
 
     prompt_template = """

@@ -1,7 +1,7 @@
 # modules/document_processor.py
 import pandas as pd
 from PyPDF2 import PdfReader
-from llama_index import Document
+from llama_index.schema import Document  # ✅ correct import
 
 def process_documents(files):
     docs = []

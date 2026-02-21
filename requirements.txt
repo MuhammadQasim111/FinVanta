@@ -1,0 +1,8 @@
+streamlit==1.28.0
+pypdf2
+pandas
+openai
+llama-index
+faiss-cpu
+matplotlib
+pydantic

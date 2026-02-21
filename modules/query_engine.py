@@ -1,9 +1,9 @@
 # modules/query_engine.py
-from llama_index import QueryEngineTool, SubQuestionQueryEngine
+from llama_index.query_engine import QueryEngineTool, SubQuestionQueryEngine
 
 def get_query_engine(index):
     engine = index.as_query_engine()
-    query_engine_tools = [
+    tools = [
         QueryEngineTool(
             query_engine=engine,
             metadata={
@@ -12,7 +12,7 @@ def get_query_engine(index):
             },
         )
     ]
-    s_engine = SubQuestionQueryEngine.from_defaults(query_engine_tools=query_engine_tools)
+    s_engine = SubQuestionQueryEngine.from_defaults(query_engine_tools=tools)
     return s_engine
 
 def ask_query(engine, query):

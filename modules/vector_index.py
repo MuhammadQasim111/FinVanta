@@ -1,11 +1,11 @@
 # modules/vector_index.py
-from llama_index import VectorStoreIndex, ServiceContext, StorageContext, Document
+from llama_index import VectorStoreIndex, ServiceContext, StorageContext
 from llama_index.vector_stores import FaissVectorStore
 import faiss
 
 def create_vector_index(documents):
     # Create FAISS index
-    d = 1536  # typical embedding dimension; adjust if needed
+    d = 1536  # adjust based on embedding dimension
     faiss_index = faiss.IndexFlatL2(d)
     vector_store = FaissVectorStore(faiss_index=faiss_index)
 

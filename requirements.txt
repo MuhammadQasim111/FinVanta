@@ -1,7 +1,9 @@
+streamlit==1.28.0
 llama-index==0.14.15
 pypdf2==3.0.1
 pandas==2.3.3
-streamlit==1.28.0
 faiss-cpu==1.13.2
 openai==2.21.0
 python-dotenv==1.2.1
+pydantic==2.12.5
+langchain==0.1.0

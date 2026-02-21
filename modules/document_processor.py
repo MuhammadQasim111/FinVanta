@@ -1,7 +1,7 @@
 # modules/document_processor.py
-import pandas as pd
 from PyPDF2 import PdfReader
-from llama_index.schema import Document  # ✅ correct import
+from llama_index.core import Document  # âœ… correct for llama-index v0.10+
+
 
 def process_documents(files):
     docs = []
@@ -10,5 +10,6 @@ def process_documents(files):
         text = ""
         for page in pdf.pages:
             text += page.extract_text() or ""
-        docs.append(Document(text=text))
+        if text.strip():
+            docs.append(Document(text=text))
     return docs
